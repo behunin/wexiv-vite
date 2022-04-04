@@ -56,31 +56,30 @@ function clearIndex() {
   }
   try {
     let req = indexedDB.open(name, 2)
+    req.onerror = (e) => {
+      console.error(e)
+      return
+    }
+
+    req.onsuccess = (e) => {
+      let transaction = req.result.transaction(name, 'readwrite')
+      transaction.onerror = (err) => {
+        console.error(err)
+      }
+
+      let store = transaction.objectStore(name)
+      var keyRangeValue = IDBKeyRange.bound("A", "Z");
+      let all = store.delete(keyRangeValue)
+      all.onerror = (err) => {
+        console.error(err)
+      }
+      all.onsuccess = (ev) => {
+        metaData.clear()
+        location.reload()
+      }
+    }
   } catch (e) {
     console.error(e)
-  }
-
-  req.onerror = (e) => {
-    console.error(e)
-    return
-  }
-
-  req.onsuccess = (e) => {
-    let transaction = req.result.transaction(name, 'readwrite')
-    transaction.onerror = (err) => {
-      console.error(err)
-    }
-
-    let store = transaction.objectStore(name)
-    var keyRangeValue = IDBKeyRange.bound("A", "Z");
-    let all = store.delete(keyRangeValue)
-    all.onerror = (err) => {
-      console.error(err)
-    }
-    all.onsuccess = (ev) => {
-      metaData.clear()
-      location.reload()
-    }
   }
 }
 
