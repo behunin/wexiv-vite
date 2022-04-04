@@ -1,21 +1,20 @@
-<script setup lang="ts">
+<script setup>
 import { reactive } from 'vue'
 import DataTable from './DataTable.vue'
 import wexiv from './wasm/wexiv.js'
-import { rowData } from '../../types/row'
 
 const name = "wexiv"
 const fileName = reactive({ name: "" })
 
 const preview = reactive({ url: "favicon.ico" })
-const metaData = reactive<Map<string, rowData>>(new Map())
+const metaData = reactive(new Map())
 
-function filezzz(e: Event) {
-  const target = <HTMLInputElement>e.target
-  const file = target.files?.item(0)
-  const src = URL.createObjectURL(file!)
+function filezzz(e) {
+  const target = e.target
+  const file = target.files.item(0)
+  const src = URL.createObjectURL(file)
   preview.url = src
-  fileName.name = file!.name
+  fileName.name = file.name
 }
 
 function getIndex() {
@@ -28,17 +27,17 @@ function getIndex() {
 
     req.onsuccess = (e) => {
       let transaction = req.result.transaction(name, 'readonly')
-      transaction.onerror = function (err: Event) {
+      transaction.onerror = function (err) {
         console.error(err)
       }
 
       let store = transaction.objectStore(name)
       let all = store.getAll()
-      all.onerror = function (err: Event) {
+      all.onerror = function (err) {
         console.error(err)
       }
-      all.onsuccess = function (ev: Event) {
-        all.result.forEach((element: rowData) => {
+      all.onsuccess = function (ev) {
+        all.result.forEach((element) => {
           metaData.set(element.name, element)
         });
       }
@@ -48,38 +47,37 @@ function getIndex() {
   }
 
   const table = document.getElementById('datatable')
-  table?.scrollIntoView()
+  table.scrollIntoView()
 }
 
 function clearIndex() {
   if (!confirm("All metadata storage will be deleted")) {
     return
   }
-  let req: IDBRequest;
   try {
-    req = indexedDB.open(name, 2)
+    let req = indexedDB.open(name, 2)
   } catch (e) {
     console.error(e)
   }
 
-  req!.onerror = (e) => {
+  req.onerror = (e) => {
     console.error(e)
     return
   }
 
-  req!.onsuccess = (e) => {
+  req.onsuccess = (e) => {
     let transaction = req.result.transaction(name, 'readwrite')
-    transaction.onerror = (err: Event) => {
+    transaction.onerror = (err) => {
       console.error(err)
     }
 
     let store = transaction.objectStore(name)
     var keyRangeValue = IDBKeyRange.bound("A", "Z");
     let all = store.delete(keyRangeValue)
-    all.onerror = (err: Event) => {
+    all.onerror = (err) => {
       console.error(err)
     }
-    all.onsuccess = (ev: Event) => {
+    all.onsuccess = (ev) => {
       metaData.clear()
       location.reload()
     }
@@ -87,10 +85,10 @@ function clearIndex() {
 }
 
 function meta() {
-  wexiv().then((acc: any, rej: any) => {
+  wexiv().then((acc, rej) => {
     if (rej) throw rej
-    const files = <HTMLInputElement>document.getElementById('files')
-    const file = files.files?.item(0)
+    const files = document.getElementById('files')
+    const file = files.files.item(0)
     if (file) {
       file.arrayBuffer().then((ab) => {
         try {
@@ -112,32 +110,14 @@ function meta() {
         }
       })
     }
-  }).catch((e: unknown) => {
+  }).catch((e) => {
     console.error(e)
   })
 
   const table = document.getElementById('datatable')
-  table?.scrollIntoView()
+  table.scrollIntoView()
 }
 
-</script>
-
-<script lang="ts">
-// Taken from emscipten, because of some weird bug not including it in the output file.
-function lengthBytesUTF8(str: string) {
-  var len = 0;
-  for (var i = 0; i < str.length; ++i) {
-    // Gotcha: charCodeAt returns a 16-bit word that is a UTF-16 encoded code unit, not a Unicode code point of the character! So decode UTF16->UTF32->UTF8.
-    // See http://unicode.org/faq/utf_bom.html#utf16-3
-    var u = str.charCodeAt(i); // possibly a lead surrogate
-    if (u >= 0xD800 && u <= 0xDFFF) u = 0x10000 + ((u & 0x3FF) << 10) | (str.charCodeAt(++i) & 0x3FF);
-    if (u <= 0x7F) ++len;
-    else if (u <= 0x7FF) len += 2;
-    else if (u <= 0xFFFF) len += 3;
-    else len += 4;
-  }
-  return len;
-}
 </script>
 
 

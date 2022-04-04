@@ -1,41 +1,33 @@
 // pretty-print-json ~ MIT License
 
-export type FormatOptions = {
-    indent?: number,   //number of spaces for indentation
-    lineNumbers?: boolean,  //add line numbers
-    linkUrls?: boolean,  //create anchor tags for URLs
-    quoteKeys?: boolean,  //always double quote key names
-};
-export type JsonType = 'key' | 'string' | 'number' | 'boolean' | 'null' | 'mark';
-
 const prettyPrintJson = {
 
     version: '~~~version~~~',
 
-    toHtml(thing: unknown, options?: FormatOptions): string {
+    toHtml(thing, options) {
         const defaults = { indent: 3, lineNumbers: false, linkUrls: true, quoteKeys: false };
         const settings = { ...defaults, ...options };
-        const htmlEntities = (text: string) => text
+        const htmlEntities = (text) => text
             // Makes text displayable in browsers.
             .replace(/&/g, '&amp;')
             .replace(/\\"/g, '&bsol;&quot;')
             .replace(/</g, '&lt;')
             .replace(/>/g, '&gt;');
-        const spanTag = (type: JsonType, display?: string): string =>
+        const spanTag = (type, display) =>
             // Creates HTML to display a value like: like "<span class=json-boolean>true</span>"
             display ? '<span class=json-' + type + '>' + display + '</span>' : '';
-        const buildValueHtml = (value: string): string => {
+        const buildValueHtml = (value) => {
             // Analyzes a value and returns HTML like: "<span class=json-number>3.1415</span>"
             const strType = /^"/.test(value) && 'string';
             const boolType = ['true', 'false'].includes(value) && 'boolean';
             const nullType = value === 'null' && 'null';
             const type = boolType || nullType || strType || 'number';
             const urlRegex = /https?:\/\/[^\s"]+/g;
-            const makeLink = (link: string) => '<a class=json-link href="' + link + '">' + link + '</a>';
+            const makeLink = (link) => '<a class=json-link href="' + link + '">' + link + '</a>';
             const display = strType && settings.linkUrls ? value.replace(urlRegex, makeLink) : value;
             return spanTag(type, display);
         };
-        const replacer = (match: string, p1: string, p2: string, p3: string, p4: string): string => {
+        const replacer = (match, p1, p2, p3, p4) => {
             // Converts the four parenthesized capture groups (indent, key, value, end) into HTML.
             const part = { indent: p1, key: p2, value: p3, end: p4 };
             const findName = settings.quoteKeys ? /(.*)(): / : /"([\w$]+)": |(.*): /;
@@ -58,8 +50,8 @@ const prettyPrintJson = {
         const json = JSON.stringify(thing, null, settings.indent) || 'undefined';
         const tmp = json.slice(2, -2) // remove {}
         const html = htmlEntities(tmp).replace(jsonLine, replacer);
-        const makeLine = (line: string): string => `   <li>${line}</li>`;
-        const addLineNumbers = (html: string): string =>  //wrap html in an <ol> tag
+        const makeLine = (line) => `   <li>${line}</li>`;
+        const addLineNumbers = (html) =>  //wrap html in an <ol> tag
             ['<ol class=json-lines>', ...html.split('\n').map(makeLine), '</ol>'].join('\n');
         return settings.lineNumbers ? addLineNumbers(html) : html;
     },

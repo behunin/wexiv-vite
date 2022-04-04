@@ -52,20 +52,19 @@
     </div>
 </template>
 
-<script setup lang="ts">
-import { computed, PropType } from 'vue'
-import { rowData } from '../../types/row';
-import { prettyPrintJson } from './pretty-print-json';
+<script setup>
+import { computed } from 'vue'
+import { prettyPrintJson } from './pretty-print-json.js';
 
 const props = defineProps({
-    rows: { type: Array as PropType<Array<rowData>>, required: true }
+    rows: { type: Array, required: true }
 })
 
 const tableRows = computed(() => props.rows)
 
-const rowClickHandler = (ev: number) => {
+const rowClickHandler = (ev) => {
     const id = 'row' + `${ev}`
-    let row = document.getElementById(id)!
+    let row = document.getElementById(id)
     row.hidden ? row.hidden = false : row.hidden = true
     if (!row.hidden) row.scrollIntoView()
 }
