@@ -124,19 +124,16 @@ function meta() {
   <div class="grid grid-flow-row gap-3">
     <p>1.</p>
     <div>
-      <label
-        for="files"
-        class="px-5 py-2.5 rounded-lg border focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700"
-      >Choose File</label>
+      <label for="files"
+        class="px-5 py-2.5 rounded-lg border focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700">Choose
+        File</label>
       <input id="files" name="files" type="file" accept="image/*" :onchange="filezzz" hidden />
     </div>
     <p>2.</p>
     <div>
-      <button
-        type="button"
+      <button type="button"
         class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-400 rounded-lg border border-gray-200 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 bg-gray-800 hover:text-white hover:bg-gray-700"
-        :onclick="meta"
-      >Store Meta</button>
+        :onclick="meta">Get Metadata</button>
       <br />
     </div>
     <div>
@@ -145,19 +142,15 @@ function meta() {
     </div>
     <div id="datatable">
       <p>3.</p>
-      <button
-        type="button"
+      <button type="button"
         class="py-2.5 px-5 mr-2 mb-2 text-sm font-medium text-gray-400 rounded-lg border border-gray-200 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 bg-gray-800 hover:text-white hover:bg-gray-700"
-        :onclick="getIndex"
-      >Get Meta</button>
+        :onclick="getIndex">View Metadata</button>
       <data-table v-if="metaData.size > 0" :rows="[...metaData.values()]" />
     </div>
   </div>
   <div class="relative bottom-0 mt-3">
-    <button
-      type="button"
+    <button type="button"
       class="px-5 py-2.5 rounded-lg border focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700"
-      @click="clearIndex"
-    >Clear Metadata Storage</button>
+      @click="clearIndex">Clear Metadata Storage</button>
   </div>
 </template>
