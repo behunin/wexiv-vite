@@ -1,6 +1,6 @@
 <template>
     <div>
-        <table class="table-auto">
+        <table class="table-fixed">
             <thead>
                 <th>Name</th>
                 <th>Exif</th>
@@ -91,22 +91,23 @@ td {
     border: 1px solid;
 }
 
+td {
+    max-width: 50em;
+    min-width: 3em;
+    overflow-wrap: break-word;
+}
+
+tr {
+    vertical-align: top;
+    text-align: left;
+}
+
 tr:active {
     outline-color: yellowgreen;
 }
 
 tr:hover {
     outline-color: blanchedalmond;
-}
-
-select.dt__pagination_size {
-    background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' fill='none' viewBox='0 0 20 20'%3e%3cpath stroke='%236b7280' stroke-linecap='round' stroke-linejoin='round' stroke-width='1.5' d='M6 8l4 4 4-4'/%3e%3c/svg%3e");
-    background-position: right 0.5rem center;
-    background-repeat: no-repeat;
-    background-size: 1.5em 1.5em;
-    padding-right: 2.5rem;
-    color-adjust: exact;
-    appearance: none;
 }
 
 /*! pretty-print-json v1.2.3 ~~ https://pretty-print-json.js.org ~~ MIT License */
@@ -120,30 +121,36 @@ select.dt__pagination_size {
     font-size: 0.9rem;
     transition: background-color 400ms;
 }
+
 a.json-link {
     text-decoration: none;
     border-bottom: 1px solid;
     outline: none;
 }
+
 a.json-link:hover {
     background-color: transparent;
     outline: none;
 }
+
 ol.json-lines {
     white-space: normal;
     padding-inline-start: 3em;
     margin: 0px;
 }
-ol.json-lines > li {
+
+ol.json-lines>li {
     white-space: pre;
     text-indent: 0.7em;
     line-height: 1.5em;
     padding: 0px;
 }
-ol.json-lines > li::marker {
+
+ol.json-lines>li::marker {
     font-family: system-ui, sans-serif;
     font-weight: normal;
 }
+
 .json-key,
 .json-string,
 .json-number,
@@ -151,7 +158,7 @@ ol.json-lines > li::marker {
 .json-null,
 .json-mark,
 a.json-link,
-ol.json-lines > li {
+ol.json-lines>li {
     transition: all 400ms;
 }
 
@@ -159,46 +166,60 @@ ol.json-lines > li {
 .json-container {
     background-color: black;
 }
+
 .json-key {
     color: indianred;
 }
+
 .json-string {
     color: darkkhaki;
 }
+
 .json-number {
     color: deepskyblue;
 }
+
 .json-boolean {
     color: mediumseagreen;
 }
+
 .json-null {
     color: darkorange;
 }
+
 .json-mark {
     color: silver;
 }
+
 a.json-link {
     color: mediumorchid;
 }
+
 a.json-link:visited {
     color: slategray;
 }
+
 a.json-link:hover {
     color: violet;
 }
+
 a.json-link:active {
     color: slategray;
 }
-ol.json-lines > li::marker {
+
+ol.json-lines>li::marker {
     color: silver;
 }
-ol.json-lines > li:nth-child(odd) {
+
+ol.json-lines>li:nth-child(odd) {
     background-color: #222222;
 }
-ol.json-lines > li:nth-child(even) {
+
+ol.json-lines>li:nth-child(even) {
     background-color: #161616;
 }
-ol.json-lines > li:hover {
+
+ol.json-lines>li:hover {
     background-color: dimgray;
 }
 </style>

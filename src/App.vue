@@ -1,5 +1,6 @@
 <script setup>
 import HelloWorld from './components/HelloWorld.vue'
+import ReloadPromptVue from './components/ReloadPrompt.vue';
 </script>
 
 <template>
@@ -10,6 +11,7 @@ import HelloWorld from './components/HelloWorld.vue'
     <p>If you have already stored your metadata you can skip to step 3.</p>
   </header>
   <HelloWorld />
+  <ReloadPromptVue />
 </template>
 
 <style>
