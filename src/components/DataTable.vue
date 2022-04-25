@@ -6,7 +6,6 @@
                 <th>Exif</th>
                 <th>IPTC</th>
                 <th>XMP</th>
-                <th>Extra</th>
             </thead>
             <tbody>
                 <template v-for="(row, rowIndex) in tableRows" :key="rowIndex">
@@ -32,19 +31,12 @@
                         <td v-else>
                             <p class="mx-1">Empty</p>
                         </td>
-                        <td v-if="Object.keys(row.head).length !== 0">
-                            <p class="mx-1">Present</p>
-                        </td>
-                        <td v-else>
-                            <p class="mx-1">Empty</p>
-                        </td>
                     </tr>
                     <tr :id="'row' + `${rowIndex}`" hidden>
                         <td></td>
                         <td v-html="prettyPrintJson.toHtml(row.exif)"></td>
                         <td v-html="prettyPrintJson.toHtml(row.iptc)"></td>
                         <td v-html="prettyPrintJson.toHtml(row.xmp)"></td>
-                        <td v-html="prettyPrintJson.toHtml(row.head)"></td>
                     </tr>
                 </template>
             </tbody>

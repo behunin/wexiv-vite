@@ -19,7 +19,7 @@ function filezzz(e) {
 
 function getIndex() {
   try {
-    let req = indexedDB.open(name, 2)
+    let req = indexedDB.open(name, 3)
 
     req.onerror = (e) => {
       console.error(e)
