@@ -7,10 +7,11 @@ export default defineConfig({
   plugins: [vue(), VitePWA({
     includeAssets: ['favicon.svg', 'favicon.ico', 'robots.txt', 'apple-touch-icon.png'],
     manifest: {
-      name: 'Wasm Exiv2',
+      name: 'Exiv2 Wasm',
       short_name: 'Wexiv',
       description: 'Exiv2 compiled to WebAssembly',
-      theme_color: '#ffffff',
+      theme_color: '#000',
+      background_color: '#2c3e50',
       icons: [
         {
           src: 'pwa-192x192.png',
