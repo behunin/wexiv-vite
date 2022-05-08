@@ -8,7 +8,7 @@ import ReloadPromptVue from './components/ReloadPrompt.vue';
     <p>This is a simple tool to read metadata from your images.</p>
     <p>Created using emscripten to compile Exiv2 to WebAssembly.</p>
     <p>For your viewing pleasure at any time you visit this site, metadata is locally stored using IndexedDB.</p>
-    <p>If you have already stored your metadata you can skip to step 3.</p>
+    <p>If you have already copied your metadata you can skip to step 3.</p>
   </header>
   <HelloWorld />
   <ReloadPromptVue />

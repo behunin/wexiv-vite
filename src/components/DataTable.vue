@@ -1,7 +1,7 @@
 <template>
     <div>
-        <table class="table-fixed">
-            <thead>
+        <table class="table-fixed w-full">
+            <thead class="align-center">
                 <th>Name</th>
                 <th>Exif</th>
                 <th>IPTC</th>
@@ -9,9 +9,10 @@
             </thead>
             <tbody>
                 <template v-for="(row, rowIndex) in tableRows" :key="rowIndex">
-                    <tr class="bordere sm:h-12" @click="rowClickHandler(rowIndex)">
-                        <td>
-                            <p class="mx-1">{{ row.name }}</p>
+                    <tr class="bordere sm:h-12 align-middle whitespace-pre overflow-hidden"
+                        @click="rowClickHandler(rowIndex)">
+                        <td class="overflow-hidden">
+                            <p class="mx-1 scroll-text">{{ row.name }}</p>
                         </td>
                         <td v-if="Object.keys(row.exif).length !== 0">
                             <p class="mx-1">Present</p>
@@ -32,7 +33,7 @@
                             <p class="mx-1">Empty</p>
                         </td>
                     </tr>
-                    <tr :id="'row' + `${rowIndex}`" hidden>
+                    <tr :id="'row' + `${rowIndex}`" class="whitespace-pre-wrap" hidden>
                         <td></td>
                         <td v-html="prettyPrintJson.toHtml(row.exif)"></td>
                         <td v-html="prettyPrintJson.toHtml(row.iptc)"></td>
@@ -63,6 +64,59 @@ const rowClickHandler = (ev) => {
 </script>
 
 <style>
+.scroll-text {
+    display: inline-flex;
+}
+
+@media only screen and (max-width: 600px) {
+    .scroll-text {
+        /* animation properties */
+        -moz-transform: translateX(1%);
+        -webkit-transform: translateX(1%);
+        transform: translateX(1%);
+
+        -moz-animation: my-animation 25s linear infinite;
+        -webkit-animation: my-animation 25s linear infinite;
+        animation: my-animation 25s linear infinite;
+    }
+}
+
+/* for Firefox */
+@-moz-keyframes my-animation {
+    from {
+        -moz-transform: translateX(1%);
+    }
+
+    to {
+        -moz-transform: translateX(-100%);
+    }
+}
+
+/* for Chrome */
+@-webkit-keyframes my-animation {
+    from {
+        -webkit-transform: translateX(1%);
+    }
+
+    to {
+        -webkit-transform: translateX(-100%);
+    }
+}
+
+@keyframes my-animation {
+    from {
+        -moz-transform: translateX(1%);
+        -webkit-transform: translateX(1%);
+        transform: translateX(1%);
+    }
+
+    to {
+        -moz-transform: translateX(-100%);
+        -webkit-transform: translateX(-100%);
+        transform: translateX(-100%);
+    }
+}
+
 .bordere {
     outline: 2px solid indigo;
     outline-offset: -5px;
