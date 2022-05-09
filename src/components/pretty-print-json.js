@@ -35,7 +35,7 @@ const prettyPrintJson = {
             const keyName = part.key && part.key.replace(findName, '$1$2');
             const keyHtml = part.key ? spanTag('key', keyName) + spanTag('mark', ': ') : '';
             const valueHtml = part.value ? buildValueHtml(part.value) : '';
-            const endHtml = spanTag('mark', part.end) + "<br />";
+            const endHtml = spanTag('mark', part.end);
             return indentHtml + keyHtml + valueHtml + endHtml;
         };
         const jsonLine = /^( *)("[^"]+": )?("[^"]*"|[\w.+-]*)?([{}[\],]*)?$/mg;

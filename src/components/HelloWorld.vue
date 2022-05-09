@@ -34,7 +34,7 @@ function getIndex() {
       let store = transaction.objectStore(name)
       let all = store.getAll()
       all.onerror = function (err) {
-        console.error(err)
+        throw err
       }
       all.onsuccess = function (ev) {
         all.result.forEach((element) => {
@@ -75,15 +75,17 @@ function clearIndex() {
       }
 
       let store = transaction.objectStore(name)
-      var keyRangeValue = IDBKeyRange.bound("A", "Z");
-      let all = store.delete(keyRangeValue)
+      var keyRangeAlpha = IDBKeyRange.bound("A", "Z")
+      var keyRangeNumber = IDBKeyRange.bound("0", "9")
+      let all = store.delete(keyRangeAlpha)
       all.onerror = (err) => {
-        console.error(err)
+        throw err
       }
       all.onsuccess = (ev) => {
         metaData.clear()
-        location.reload()
       }
+      all = store.delete(keyRangeNumber)
+      location.reload()
     }
   } catch (e) {
     console.error(e)
@@ -91,6 +93,7 @@ function clearIndex() {
 }
 
 function meta() {
+  let icons = document.getElementById('copy')
   wexiv().then((acc, rej) => {
     if (rej) throw rej
     const files = document.getElementById('files')
@@ -111,27 +114,51 @@ function meta() {
           }
           acc._free(heapBytes.byteOffset)
           acc._free(namePtr)
-          let icons = document.getElementById('copy')
           let icon1 = icons.querySelector("svg > path:nth-of-type(1)")
           if (!icon1.classList.contains('hidden')) icon1.classList.toggle("hidden")
           let icon2 = icons.querySelector("svg > path:nth-of-type(2)")
           if (icon2.classList.contains('hidden')) icon2.classList.toggle("hidden")
+          icons.classList.add('steppin')
         } catch (e) {
           throw e
         }
       })
     }
   }).catch((e) => {
-    let icons = document.getElementById('copy')
-    let icon2 = icons.querySelector("svg > path:nth-of-type(1)")
+    let icon2 = icons.querySelector("svg > path:nth-of-type(2)")
     if (!icon2.classList.contains('hidden')) icon2.classList.toggle("hidden")
     let icon1 = icons.querySelector("svg > path:nth-of-type(1)")
     if (icon1.classList.contains('hidden')) icon1.classList.toggle("hidden")
     console.error(e)
   })
+  if (icons.classList.contains('steppin')) icons.classList.remove('steppin')
 }
 
 </script>
+
+<style>
+.steppin {
+  position: relative;
+  -moz-animation: mainFadeIn 2s linear infinite;
+  -webkit-animation: mainFadeIn 2s linear infinite;
+  -o-animation: mainFadeIn 2s linear infinite;
+  animation: mainFadeIn 2s linear 1;
+}
+
+@keyframes mainFadeIn {
+  0% {
+    left: 3px;
+  }
+
+  50% {
+    left: -3px;
+  }
+
+  100% {
+    left: 0px;
+  }
+}
+</style>
 
 
 <template>
