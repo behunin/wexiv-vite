@@ -17,6 +17,14 @@ function filezzz(e) {
   fileName.name = file.name
 }
 
+function clearIcon() {
+  let icons = document.getElementById('copy')
+  let icon1 = icons.querySelector("svg > path:nth-of-type(1)")
+  if (!icon1.classList.contains('hidden')) icon1.classList.toggle("hidden")
+  let icon2 = icons.querySelector("svg > path:nth-of-type(2)")
+  if (!icon2.classList.contains('hidden')) icon2.classList.toggle("hidden")
+}
+
 function getIndex() {
   try {
     let req = indexedDB.open(name, 3)
@@ -165,9 +173,9 @@ function meta() {
   <div class="grid grid-flow-row gap-3">
     <div class="align-middle py-3">
       1
-      <label for="files"
-        class="px-5 py-2.5 rounded-lg border focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700">Choose
-        File
+      <label for="files" :onclick="clearIcon"
+        class="px-5 py-2.5 rounded-lg border focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700">
+        Choose File
       </label>
       <input id="files" name="files" type="file" accept="image/*" :onchange="filezzz" hidden />
     </div>
