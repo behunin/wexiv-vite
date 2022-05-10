@@ -119,7 +119,7 @@ const rowClickHandler = (ev) => {
 
 .bordere {
     outline: 2px solid indigo;
-    outline-offset: -5px;
+    outline-offset: -3px;
     background-color: #333;
 }
 
