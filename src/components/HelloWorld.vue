@@ -3,10 +3,13 @@ import { reactive } from 'vue'
 import DataTable from './DataTable.vue'
 import wexiv from './wasm/wexiv.js'
 
-const name = "wexiv"
-const fileName = reactive({ name: "" })
+const name = 'wexiv'
+const i1 = 'svg > path:nth-of-type(1)'
+const i2 = 'svg > path:nth-of-type(2)'
+const hidden = 'hidden'
 
-const preview = reactive({ url: "favicon.ico" })
+const fileName = reactive({ name: "" })
+const preview = reactive({ url: 'favicon.ico' })
 const metaData = reactive(new Map())
 
 function filezzz(e) {
@@ -19,10 +22,10 @@ function filezzz(e) {
 
 function clearIcon() {
   let icons = document.getElementById('copy')
-  let icon1 = icons.querySelector("svg > path:nth-of-type(1)")
-  if (!icon1.classList.contains('hidden')) icon1.classList.toggle("hidden")
-  let icon2 = icons.querySelector("svg > path:nth-of-type(2)")
-  if (!icon2.classList.contains('hidden')) icon2.classList.toggle("hidden")
+  let icon1 = icons.querySelector(i1)
+  if (!icon1.classList.contains(hidden)) icon1.classList.toggle(hidden)
+  let icon2 = icons.querySelector(i2)
+  if (!icon2.classList.contains(hidden)) icon2.classList.toggle(hidden)
 }
 
 function getIndex() {
@@ -36,7 +39,7 @@ function getIndex() {
     req.onsuccess = (e) => {
       let transaction = req.result.transaction(name, 'readonly')
       transaction.onerror = function (err) {
-        console.error(err)
+        throw err
       }
 
       let store = transaction.objectStore(name)
@@ -45,58 +48,86 @@ function getIndex() {
         throw err
       }
       all.onsuccess = function (ev) {
+        let icons = document.getElementById('view')
+        if (all.result.length === 0) {
+          let icon2 = icons.querySelector(i2)
+          if (!icon2.classList.contains(hidden)) icon2.classList.toggle(hidden)
+          let icon3 = icons.querySelector('svg > path:nth-of-type(3)')
+          if (icon3.classList.contains(hidden)) icon3.classList.toggle(hidden)
+          return
+        }
         all.result.forEach((element) => {
           metaData.set(element.name, element)
         });
-        let icons = document.getElementById('view')
-        let icon1 = icons.querySelector("svg > path:nth-of-type(1)")
-        if (!icon1.classList.contains('hidden')) icon1.classList.toggle("hidden")
-        let icon2 = icons.querySelector("svg > path:nth-of-type(2)")
-        if (icon2.classList.contains('hidden')) icon2.classList.toggle("hidden")
+        let icon1 = icons.querySelector(i1)
+        if (!icon1.classList.contains(hidden)) icon1.classList.toggle(hidden)
+        let icon2 = icons.querySelector(i2)
+        if (icon2.classList.contains(hidden)) icon2.classList.toggle(hidden)
       }
     }
   } catch (e) {
     let icons = document.getElementById('view')
-    let icon2 = icons.querySelector("svg > path:nth-of-type(1)")
-    if (!icon2.classList.contains('hidden')) icon2.classList.toggle("hidden")
-    let icon1 = icons.querySelector("svg > path:nth-of-type(1)")
-    if (icon1.classList.contains('hidden')) icon1.classList.toggle("hidden")
+    let icon2 = icons.querySelector(i2)
+    if (!icon2.classList.contains(hidden)) icon2.classList.toggle(hidden)
+    let icon1 = icons.querySelector(i1)
+    if (icon1.classList.contains(hidden)) icon1.classList.toggle(hidden)
     console.error(e)
   }
 }
 
-function clearIndex() {
-  if (!confirm("All metadata storage will be deleted")) {
+function deleteIndex(rowName) {
+  if (!confirm(rowName + ' metadata storage will be deleted')) {
     return
   }
-  try {
-    let req = indexedDB.open(name, 3)
-    req.onerror = (e) => {
-      console.error(e)
-      return
-    }
-
-    req.onsuccess = (e) => {
-      let transaction = req.result.transaction(name, 'readwrite')
-      transaction.onerror = (err) => {
-        console.error(err)
-      }
-
-      let store = transaction.objectStore(name)
-      var keyRangeAlpha = IDBKeyRange.bound("A", "Z")
-      var keyRangeNumber = IDBKeyRange.bound("0", "9")
-      let all = store.delete(keyRangeAlpha)
-      all.onerror = (err) => {
-        throw err
-      }
-      all.onsuccess = (ev) => {
-        metaData.clear()
-      }
-      all = store.delete(keyRangeNumber)
-      location.reload()
-    }
-  } catch (e) {
+  let req = indexedDB.open(name, 3)
+  req.onerror = (e) => {
     console.error(e)
+  }
+
+  req.onsuccess = (e) => {
+    let transaction = req.result.transaction(name, 'readwrite')
+    transaction.onerror = (err) => {
+      console.error(err)
+    }
+
+    let store = transaction.objectStore(name)
+    let all = store.delete(rowName)
+    all.onerror = (err) => {
+      console.error(err)
+    }
+    all.onsuccess = (ev) => {
+      metaData.delete(rowName)
+    }
+  }
+}
+
+function clearIndex() {
+  if (!confirm('All metadata storage will be deleted')) {
+    return
+  }
+  let req = indexedDB.open(name, 3)
+  req.onerror = (e) => {
+    console.error(e)
+  }
+
+  req.onsuccess = (e) => {
+    let transaction = req.result.transaction(name, 'readwrite')
+    transaction.onerror = (err) => {
+      console.error(err)
+    }
+
+    let store = transaction.objectStore(name)
+    var keyRangeAlpha = IDBKeyRange.bound('A', 'Z')
+    var keyRangeNumber = IDBKeyRange.bound('0', '9')
+    let all = store.delete(keyRangeAlpha)
+    all.onerror = (err) => {
+      console.error(err)
+    }
+    all.onsuccess = (ev) => {
+      metaData.clear()
+    }
+    all = store.delete(keyRangeNumber)
+    location.reload()
   }
 }
 
@@ -122,10 +153,10 @@ function meta() {
           }
           acc._free(heapBytes.byteOffset)
           acc._free(namePtr)
-          let icon1 = icons.querySelector("svg > path:nth-of-type(1)")
-          if (!icon1.classList.contains('hidden')) icon1.classList.toggle("hidden")
-          let icon2 = icons.querySelector("svg > path:nth-of-type(2)")
-          if (icon2.classList.contains('hidden')) icon2.classList.toggle("hidden")
+          let icon1 = icons.querySelector(i1)
+          if (!icon1.classList.contains(hidden)) icon1.classList.toggle(hidden)
+          let icon2 = icons.querySelector(i2)
+          if (icon2.classList.contains(hidden)) icon2.classList.toggle(hidden)
           icons.classList.add('steppin')
         } catch (e) {
           throw e
@@ -133,10 +164,10 @@ function meta() {
       })
     }
   }).catch((e) => {
-    let icon2 = icons.querySelector("svg > path:nth-of-type(2)")
-    if (!icon2.classList.contains('hidden')) icon2.classList.toggle("hidden")
-    let icon1 = icons.querySelector("svg > path:nth-of-type(1)")
-    if (icon1.classList.contains('hidden')) icon1.classList.toggle("hidden")
+    let icon2 = icons.querySelector(i2)
+    if (!icon2.classList.contains(hidden)) icon2.classList.toggle(hidden)
+    let icon1 = icons.querySelector(i1)
+    if (icon1.classList.contains(hidden)) icon1.classList.toggle(hidden)
     console.error(e)
   })
   if (icons.classList.contains('steppin')) icons.classList.remove('steppin')
@@ -173,18 +204,18 @@ function meta() {
   <div class="grid grid-flow-row gap-3">
     <div class="align-middle py-3">
       1
-      <label for="files" :onclick="clearIcon"
+      <label for="files" @click="clearIcon"
         class="px-5 py-2.5 rounded-lg border focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 bg-gray-800 text-gray-400 border-gray-600 hover:text-white hover:bg-gray-700">
         Choose File
       </label>
-      <input id="files" name="files" type="file" accept="image/*" :onchange="filezzz" hidden />
+      <input id="files" name="files" type="file" accept="image/*" @change="filezzz" hidden />
     </div>
     <div class="flex">
       <div class="align-middle py-1.5">
         2
         <button type="button"
           class="py-2.5 px-5 mb-2 text-sm font-medium text-gray-400 rounded-lg border border-gray-600 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 bg-gray-800 hover:text-white hover:bg-gray-700"
-          :onclick="meta">Copy Metadata</button>
+          @click="meta">Copy Metadata</button>
         <br />
       </div>
       <svg xmlns="http://www.w3.org/2000/svg" id="copy" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
@@ -205,7 +236,7 @@ function meta() {
         3
         <button type="button"
           class="py-2.5 px-5 mb-2 text-sm font-medium text-gray-400 rounded-lg border border-gray-600 focus:z-10 focus:ring-2 focus:ring-blue-700 focus:text-blue-700 bg-gray-800 hover:text-white hover:bg-gray-700"
-          :onclick="getIndex">View Metadata</button>
+          @click="getIndex">View Metadata</button>
       </div>
       <svg xmlns="http://www.w3.org/2000/svg" id="view" class="h-6 w-6" fill="none" viewBox="0 0 24 24"
         stroke-width="2">
@@ -213,10 +244,12 @@ function meta() {
           d="M12 8v4m0 4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z" />
         <path stroke-linecap="round" stroke-linejoin="round" stroke="green" class="hidden"
           d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-3 7h3m-3 4h3m-6-4h.01M9 16h.01" />
+        <path stroke-linecap="round" stroke-linejoin="round" stroke="green" class="hidden"
+          d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2" />
       </svg>
     </div>
     <div id="datatable">
-      <data-table v-if="metaData.size > 0" :rows="[...metaData.values()]" />
+      <data-table v-if="metaData.size > 0" :rows="[...metaData.values()]" @rowname="(e) => deleteIndex(e)" />
     </div>
   </div>
   <div class="relative bottom-0 mt-20">
